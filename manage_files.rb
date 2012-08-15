@@ -27,9 +27,11 @@ end
 def pick_songs(pandora, google_drive)
   files = Dir.glob("#{pandora}/*.mp3").sort_by { |f| File.mtime(f) }
   files.reverse().each do | file |
-    `qlmanage -p "#{file}"`
+    puts "Playing #{file}"
+    pid = spawn "afplay \"#{file}\""
     puts "(k)eep, (d)elete, (s)kip"
-    choice = gets 
+    choice = gets
+    spawn "kill #{pid}"
     case choice
       when /d/
         puts "Deleting #{file}"
