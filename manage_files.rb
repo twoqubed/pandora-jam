@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
+require 'yaml'
 
-def consolidate_files(pandora)
-  Dir["#{pandora}/*/**"].each do | file |
+def consolidate_files(pandora_jam)
+  Dir["#{pandora_jam}/*/**"].each do | file |
     file_name = file.split("/").last
-    target = "#{pandora}/#{file_name}"
+    target = "#{pandora_jam}/#{file_name}"
     if File.exists? target
       File.delete file
     else
@@ -14,18 +15,18 @@ def consolidate_files(pandora)
   end
 end
 
-def remove_duplicates(pandora, google_drive)
-  Dir.foreach(pandora) do | each |
-    if File.exists?("#{google_drive}/#{each}") and File.file?("#{google_drive}/#{each}")
-      file_to_delete = "#{pandora}/#{each}"
+def remove_duplicates(pandora_jam, target)
+  Dir.foreach(pandora_jam) do | each |
+    if File.exists?("#{target}/#{each}") and File.file?("#{target}/#{each}")
+      file_to_delete = "#{pandora_jam}/#{each}"
       puts "deleting #{file_to_delete}"
       File.delete(file_to_delete)
     end
   end
 end
 
-def pick_songs(pandora, google_drive)
-  files = Dir.glob("#{pandora}/*.mp3").sort_by { |f| File.mtime(f) }
+def pick_songs(pandora_jam, target)
+  files = Dir.glob("#{pandora_jam}/*.mp3").sort_by { |f| File.mtime(f) }
   files.reverse().each do | file |
     puts "Playing #{file}"
     pid = spawn "afplay \"#{file}\""
@@ -37,14 +38,16 @@ def pick_songs(pandora, google_drive)
         puts "Deleting #{file}"
         File.delete(file)
       when /k/
-        FileUtils.move file, google_drive
+        FileUtils.move file, target
     end
   end
 end
 
-pandora = File.expand_path "~/Music/PandoraJam"
-google_drive = File.expand_path "~/Google Drive/Music"
+config = YAML.load_file("config/directories.yml")
 
-consolidate_files pandora
-remove_duplicates pandora, google_drive
-pick_songs pandora, google_drive
+pandora_jam = config['pandora_jam']
+target = config['target']
+
+consolidate_files pandora_jam
+remove_duplicates pandora_jam, target
+pick_songs pandora_jam, target
