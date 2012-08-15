@@ -30,7 +30,7 @@ def pick_songs(pandora_jam, target)
   files.reverse().each do | file |
     puts "Playing #{file}"
     pid = spawn "afplay \"#{file}\""
-    puts "(k)eep, (d)elete, (s)kip"
+    puts "(k)eep, (d)elete, (s)kip, or (q)uit"
     choice = gets
     spawn "kill #{pid}"
     case choice
@@ -39,6 +39,8 @@ def pick_songs(pandora_jam, target)
         File.delete(file)
       when /k/
         FileUtils.move file, target
+      when /q/
+        exit
     end
   end
 end
