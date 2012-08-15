@@ -9,8 +9,8 @@
 
 require 'fileutils'
 
-pandora = "/Users/twoqubed/Music/PandoraJam"
-google_drive = "/Users/twoqubed/Google Drive/Music/."
+pandora = File.expand_path "~/Music/PandoraJam"
+google_drive = File.expand_path "~/Google Drive/Music/."
 
 files = Dir.glob("#{pandora}/*.mp3").sort_by { |f| File.mtime(f) }
 files.reverse().each do | file |

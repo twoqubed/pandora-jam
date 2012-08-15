@@ -2,8 +2,8 @@
 
 # Removes files that already exist in the the Google Drive folder
 
-pandora = "/Users/twoqubed/Music/PandoraJam"
-google_drive = "/Users/twoqubed/Google Drive/Music"
+pandora = File.expand_path "~/Music/PandoraJam"
+google_drive = File.expand_path "~/Google Drive/Music"
 
 Dir.foreach(pandora) do | each |
   if File.exists?("#{google_drive}/#{each}") and File.file?("#{google_drive}/#{each}")

@@ -4,9 +4,9 @@
 
 require 'fileutils'
 
-pandora = "/Users/twoqubed/Music/PandoraJam"
+pandora = File.expand_path "~/Music/PandoraJam"
 
-Dir["/Users/twoqubed/Music/PandoraJam/*/**"].each do | file |
+Dir["#{pandora}/*/**"].each do | file |
   file_name = file.split("/").last
   target = "#{pandora}/#{file_name}"
   if File.exists? target
