@@ -24,9 +24,21 @@ def remove_duplicates(pandora_jam, target)
   end
 end
 
-def pick_songs(pandora_jam, target)
+def pick_songs(pandora_jam, target, skipped_cache, deleted_cache)
   files = Dir.glob("#{pandora_jam}/*.mp3").sort_by { |f| File.mtime(f) }
   files.reverse().each do | file |
+    
+    if skipped_cache.include? file
+      puts "skipping #{file}"
+      next
+    end
+
+    if deleted_cache.include? file
+      puts "Deleting #{file}"
+      File.delete(file)
+      next
+    end
+    
     puts "Playing #{file}"
     pid = spawn "afplay \"#{file}\""
     puts "(k)eep, (d)elete, (s)kip, or (q)uit"
@@ -38,6 +50,9 @@ def pick_songs(pandora_jam, target)
         File.delete(file)
       when /k/
         FileUtils.move file, target
+      when /s/
+        skipped_cache.push file
+        File.open("config/.skipped", 'a') {|f| f.puts file }
       when /q/
         exit
     end
@@ -46,7 +61,9 @@ end
 
 def load_cache_file(file_name)
   if File.exists? file_name
-    return IO.readlines file_name
+    cache = IO.readlines file_name
+    cache.each { |line| line.strip! }
+    return cache
   else
     File.new file_name, 'w'
     return []
@@ -63,4 +80,4 @@ deleted_cache = load_cache_file "config/.deleted"
 
 consolidate_files pandora_jam
 remove_duplicates pandora_jam, target
-pick_songs pandora_jam, target
+pick_songs pandora_jam, target, skipped_cache, deleted_cache

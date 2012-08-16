@@ -1,3 +1,3 @@
 ## TODO
 
-* "Remember" skipped and deleted files
+* Clean up main method
