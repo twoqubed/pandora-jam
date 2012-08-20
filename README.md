@@ -1,3 +1,1 @@
-## TODO
-
-* Clean up main method
+Manages PandoraJam files
