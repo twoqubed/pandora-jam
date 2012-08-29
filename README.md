@@ -15,6 +15,11 @@ Script for managing songs downloaded by PandoraJam.
 In the `config` directory, you will need to create a `directories.yml`
 file and configure to directories, `pandora_jam` and `target`
 
+## Executing
+
+Once you have configured your directories, you simply execute the manage_files
+ruby script.
+
 ## Caching
 
 Any skipped or deleted files are "remembered" in the `config/.skipped` 
