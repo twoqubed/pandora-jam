@@ -47,16 +47,20 @@ def prompt_for_choice(file)
   return choice
 end
 
-def process_choice(choice, file, skipped_cache, target)
+def cache(file, cache, cache_file_name)
+  cache.push file
+  File.open(cache_file_name, 'a') {|f| f.puts file }
+end
+
+def process_choice(choice, file, skipped_cache, deleted_cache, target)
   case choice
     when /d/
-      puts "Deleting #{file}"
+      cache file, deleted_cache, 'config/.deleted'
       File.delete(file)
     when /k/
       FileUtils.move file, target
     when /s/
-      skipped_cache.push file
-      File.open("config/.skipped", 'a') {|f| f.puts file }
+      cache file, skipped_cache, 'config/.skipped'
     when /q/
       exit
     end
@@ -67,7 +71,7 @@ def pick_songs(pandora_jam, target, skipped_cache, deleted_cache)
   files.reverse().each do | file |
     if (!cached? file, skipped_cache, deleted_cache)
       choice = prompt_for_choice file
-      process_choice choice, file, skipped_cache, target
+      process_choice choice, file, skipped_cache, deleted_cache, target
     end
   end
 end
