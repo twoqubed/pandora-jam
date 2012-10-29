@@ -59,6 +59,7 @@ def process_choice(choice, file, skipped_cache, deleted_cache, target)
       File.delete(file)
     when /k/
       FileUtils.move file, target
+      FileUtils.touch target
     when /s/
       cache file, skipped_cache, 'config/.skipped'
     when /q/
