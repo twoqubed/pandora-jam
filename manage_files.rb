@@ -10,6 +10,7 @@ def consolidate_files(pandora_jam)
       puts "Updating timestamp on #{to}"
       File.delete to
     end
+
     FileUtils.move from, to
   end
 end
@@ -21,6 +22,13 @@ def remove_duplicates(pandora_jam, target)
       puts "#{file_to_delete} already exists in target directory. Deleting."
       File.delete(file_to_delete)
     end
+
+    m4a = "#{pandora_jam}/#{each}".sub! 'mp3', 'm4a'
+    if (each.include?('mp3') and !m4a.nil? and  File.exists?(m4a))
+      puts "Deleting #{m4a}"
+      File.delete(m4a)
+    end
+
   end
 end
 
